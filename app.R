@@ -9,6 +9,7 @@
 
 
 
+
 rsconnect::setAccountInfo(name='kayla-schulte',
                           token='77725AA794B8B3A4B500E5E1A7CB0E69',
                           secret='jy944RHS38cQCim414AONiz1dt7eXLCb2GMLnkhF')
@@ -27,11 +28,9 @@ library(dashboardthemes)
 # UI
 
 ui <- fluidPage(
-    
+    theme = "bootstrap.css",
     # Application title
     titlePanel("OxAir - Hybrid AQ Data Map"),
-    shinyDashboardThemes(
-        theme = "grey_light"),
     
     # Sidebar with a slider input for number of bins 
     

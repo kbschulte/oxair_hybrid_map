@@ -8,6 +8,8 @@ library(leaflet)
 library(dplyr)
 library(dygraphs)
 library(shinythemes)
+library(ggmap)
+library(xts)
 
 # UI
 
@@ -16,9 +18,7 @@ ui <- fluidPage(
     # Application title
     theme = shinythemes::shinytheme("yeti"),
     titlePanel(h1("OxAir - Hybrid AQ Data Map", align = "center")),
-    
-    # Sidebar with a slider input for number of bins 
-    
+
     dashboardBody(
         fluidRow(
             column(width = 9,

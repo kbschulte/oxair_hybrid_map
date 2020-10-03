@@ -1,20 +1,5 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 
-
-
-
-rsconnect::setAccountInfo(name='kayla-schulte',
-                          token='77725AA794B8B3A4B500E5E1A7CB0E69',
-                          secret='jy944RHS38cQCim414AONiz1dt7eXLCb2GMLnkhF')
-
-rsconnect::deployApp("~/shinyapps/oxair_hybrid_map/", account = 'kayla-schulte')
+# packages
 
 library(shiny)
 library(rsconnect)
@@ -23,11 +8,13 @@ library(leaflet)
 library(dplyr)
 library(curl) # make the jsonlite suggested dependency explicit
 library(dygraphs)
-library(dashboardthemes)
+library(shinythemes)
 
 # UI
 
 ui <- fluidPage(
+    
+    # Application title
     theme = shinythemes::shinytheme("yeti"),
     titlePanel(h1("OxAir - Hybrid AQ Data Map", align = "center")),
     
@@ -36,7 +23,7 @@ ui <- fluidPage(
     dashboardBody(
         fluidRow(
             column(width = 9,
-                   box(width = NULL, solidHeader = TRUE,
+                   box(width = NULL, solidHeader = TRUE, style='padding:20px;',
                        leafletOutput(outputId = "oxmap", height = 400), 
                    ),
                    box(width = NULL, height = 500,
@@ -45,37 +32,27 @@ ui <- fluidPage(
             column(width = 3,
                    box(width = NULL, status = "warning",
                        uiOutput("routeSelect"),
-                       checkboxGroupInput("directions", "Show",
-                                          choices = c(
-                                              Journey_1 = 4,
-                                              Journey_2 = 1,
-                                              Journey_3 = 2,
-                                              Journey_4 = 3,
-                                              Journey_5 = 5,
-                                              Journey_6 = 6
-                                          ),
-                                          selected = c(1, 2, 3, 4, 5, 6)
-                       ),
+                       selectInput(inputId = "Selector",
+                                   label = "Select Example Journey",
+                                   choices = c("Please Select:",
+                                               "CGM1",
+                                               "CGM2"),
+                                   selected = "Please Select:"),
                        p(
                            class = "text-muted",
                            paste("Note: each 'Journey' represents a different OxAir Competency Group member's path through Oxford. Data was collected at different dates and times."
                            )
                        ),
-                       actionButton("zoomButton", "Zoom out to see all")
                    ),
             )
         ),
-        absolutePanel(top = 60, left = 20, 
-                      checkboxInput("markers", "Depth", FALSE),
-                      checkboxInput("heat", "Heatmap", FALSE)
-        )))
-
-
+    ))
 
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     
+    #my code below - fit into busmap code above    
     
     output$oxmap <- renderLeaflet({
         
@@ -85,10 +62,11 @@ server <- function(input, output) {
             library = 'ion'
         )
         
-        map <- leaflet() %>% setView(lng = -1.189, lat = 51.721, zoom = 11) %>% 
+        map <- leaflet() %>% 
+            setView(lng = -1.189, lat = 51.721, zoom = 11) %>% 
             addTiles() %>%
-            addPolylines(data = CGM1_pm, lat = ~X, lng = ~Y) %>%
-            addAwesomeMarkers(
+            addPolylines(data = master_df_pm, lat = ~X, lng = ~Y, group = "Journeys", color = ~CG_member) %>% #polylines should change color according to pollution concentration
+            addAwesomeMarkers( #markers need to change location & content according to each CG_member
                 lng = -1.265375, lat = 51.77881,
                 icon=icons,
                 label = "TEST 1",
@@ -101,7 +79,9 @@ server <- function(input, output) {
         
     })
     
-    output$CGM1_pm2_5_timeseries <- renderDygraph({
+    #leaflet polylines & dygraph widgets should be connected so that when you hover over dygraph, location of reading shows up as a circle on leaflet map
+    
+    output$CGM1_pm2_5_timeseries <- renderDygraph({ #dygraph should change to match CG_member selected from dropdown menu, should also toggle between PM & NO2 timeseries
         xts(x = CGM1_pm$pm2_5, order.by = CGM1_pm$datetime) %>%
             dygraph() %>%
             dyOptions( drawPoints = TRUE, pointSize = 4) %>%
@@ -120,6 +100,10 @@ server <- function(input, output) {
     })
 }
 
+# Run the application locally
+shinyApp(ui, server)
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+# Run the application via shinyapps.io (NOT WORKING!!)
+
+rsconnect::deployApp("/Users/kaylaschulte/shinyapps/oxair_hybrid_map/", account = 'kayla-schulte')
+

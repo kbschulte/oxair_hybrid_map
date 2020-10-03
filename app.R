@@ -1,5 +1,5 @@
 
-# packages
+# Packages
 
 library(shiny)
 library(rsconnect)
@@ -48,10 +48,8 @@ ui <- fluidPage(
     ))
 
 
-# Define server logic required to draw a histogram
+# SERVER
 server <- function(input, output) {
-    
-    #my code below - fit into busmap code above    
     
     output$oxmap <- renderLeaflet({
         

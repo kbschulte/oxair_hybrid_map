@@ -28,9 +28,8 @@ library(dashboardthemes)
 # UI
 
 ui <- fluidPage(
-    theme = "bootstrap.css",
-    # Application title
-    titlePanel("OxAir - Hybrid AQ Data Map"),
+    theme = shinythemes::shinytheme("yeti"),
+    titlePanel(h1("OxAir - Hybrid AQ Data Map", align = "center")),
     
     # Sidebar with a slider input for number of bins 
     

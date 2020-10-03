@@ -6,7 +6,6 @@ library(rsconnect)
 library(shinydashboard)
 library(leaflet)
 library(dplyr)
-library(curl) # make the jsonlite suggested dependency explicit
 library(dygraphs)
 library(shinythemes)
 
@@ -81,8 +80,8 @@ server <- function(input, output) {
     
     #leaflet polylines & dygraph widgets should be connected so that when you hover over dygraph, location of reading shows up as a circle on leaflet map
     
-    output$CGM1_pm2_5_timeseries <- renderDygraph({ #dygraph should change to match CG_member selected from dropdown menu, should also toggle between PM & NO2 timeseries
-        xts(x = CGM1_pm$pm2_5, order.by = CGM1_pm$datetime) %>%
+    output$CGM1_pm2_5_timeseries <- renderDygraph({
+        xts(x = master_df_pm$pm2_5, order.by = master_df_pm$datetime) %>%
             dygraph() %>%
             dyOptions( drawPoints = TRUE, pointSize = 4) %>%
             dyLimit(0, "Low", labelLoc="right", color="grey") %>%

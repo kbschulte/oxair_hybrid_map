@@ -10,6 +10,11 @@ library(dygraphs)
 library(shinythemes)
 library(ggmap)
 library(xts)
+library(rdrop2)
+
+#data
+
+
 
 # UI
 
@@ -102,5 +107,6 @@ shinyApp(ui, server)
 
 # Run the application via shinyapps.io (NOT WORKING!!)
 
-rsconnect::deployApp("/Users/kaylaschulte/shinyapps/oxair_hybrid_map/", account = 'kayla-schulte')
+rsconnect::deployApp("shinyapps/oxair_hybrid_map/hybrid_app.rmd", account = 'kayla-schulte')
+
 
